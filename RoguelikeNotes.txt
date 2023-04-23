@@ -28,7 +28,7 @@ RogueLike tutorial notes:
 	
 ::Map::
 (rooms and tunnels)
-	Map(width, height, tiles)
+	Map(width, height, tiles, visible, explored)
 		in_bounds(x,y)
 			checks if coordinate is in bounds
 		render(console)
