@@ -1,0 +1,73 @@
+RogueLike tutorial notes:
+
+::main::
+(runs all the stuff)
+	-terminal
+	-console
+
+::events::
+(things that happen)
+	::input handler::
+	EventHandler
+		what action to do when event happens(keydown, quit)
+	::action::
+	Action
+		abstract, outlines the perform function for all Actions
+	MovementAction
+		perform(engine, entity)
+			walkable & out of bounds check
+			moves entity
+	EscapeAction
+		perform(engine, entity)
+			raise SystemExit
+		
+::Entities::
+(player, npc, item)
+	Entity
+		move(dx, dy): moves entity
+	
+::Map::
+(rooms and tunnels)
+	Map(width, height, tiles)
+		in_bounds(x,y)
+			checks if coordinate is in bounds
+		render(console)
+			renders tiles to the console
+
+::tile_types::
+	dtypes (structs)
+	new_tile(walkable,transparent, foreground, background)
+		floor = walkable, transparent
+		wall = not walkable, not transparent
+
+::Engine::
+(draws map and entities)
+	Engine(entities, event_handler, game_map, player)
+		handle_event(events)
+			event handler does its job
+		render(console, context)
+			render game map
+			render each entity
+			draw/clear console
+
+::procgen::
+(procedural generation)
+	RectangularRoom(x, y, width, height)
+		@property: center (center tile of the room)
+		@property: inner (floor section of the room)
+		intersects(other_room)
+			true if this room overlaps another
+
+	tunnel_between(start, end):
+		(returns an L shaped tunnel between two coordinates)
+		randomly decides horizontal/vertical or vertical/horizontal
+		draws bresenham lines from start to intersection to end
+		
+	generate_dungeon(max_rooms, room_min, room_max, map_width, map_height, player)
+		(generate a new dungeon map)
+		create GameMap, list of rooms
+		for each room,
+			random room hight, width
+			check intersection
+			dig out floor
+			place player in the first room or tunnel to the previous room
