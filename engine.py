@@ -21,7 +21,7 @@ class Engine:
             if action is None:
                 continue
 
-            action.perform(engine=self, player=self.player)
+            action.perform(engine=self, entity=self.player)
     
     def render(self, console: Console, context: Context):
         self.game_map.render(console)

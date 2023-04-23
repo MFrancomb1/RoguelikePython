@@ -3,6 +3,7 @@ from engine import Engine
 from input_handlers import EventHandler
 from entity import Entity
 from game_map import GameMap
+from procgen import generate_dungeon
 
 def main() -> None:
     sWidth = 80
@@ -11,12 +12,16 @@ def main() -> None:
     mapWidth = 80
     mapheight = 45
 
+    room_max_size = 10
+    room_min_size = 6
+    max_rooms = 30
+
     event_handler = EventHandler()
     player = Entity(int(sWidth)//2 + 5, int(sHeight)//2, "@", (255,255,255))
     npc = Entity(int(sWidth)//2 - 5, int(sHeight)//2, "@", (255, 255, 0))
     entities = {npc, player}
 
-    game_map = GameMap(mapWidth, mapheight)
+    game_map = generate_dungeon(max_rooms, room_min_size, room_max_size, mapWidth, mapheight, player)
     engine = Engine(entities=entities, event_handler=event_handler, game_map=game_map, player=player)
 
     tileset = tcod.tileset.load_tilesheet("dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD)
