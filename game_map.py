@@ -1,5 +1,5 @@
 from  __future__ import annotations
-from typing import Iterable, TYPE_CHECKING
+from typing import Iterable, Optional, TYPE_CHECKING
 import numpy as np
 from tcod.console import Console
 
@@ -21,6 +21,12 @@ class GameMap:
 
     def in_bounds(self, x, y) -> bool:
         return 0<=x<=self.width and 0<=y<=self.height
+    
+    def get_blocking_entity_at_location(self, location_x: int, location_y: int) -> Optional[Entity]:
+        for entity in self.entities:
+            if entity.blocks_movement and entity.x == location_x and entity.y == location_y:
+                return entity
+        return None
     
     def render(self, console) -> None:
         """renders the map if the tile is in the visible array, it uses the light color 
