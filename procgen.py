@@ -50,8 +50,20 @@ def tunnel_between(start: Tuple[int,int], end: Tuple[int,int]) -> Iterator[Tuple
         yield x, y
 
 def generate_dungeon(max_rooms, room_min, room_max, map_width, map_height, player) -> GameMap:
-    #generate a new dungeon map
-    dungeon = GameMap(map_width,map_height)
+    """Generate a new dungeon map.
+
+    Args:
+        max_rooms (int): Maximum number of rooms
+        room_min (int): Minimum room size
+        room_max (int): Maximum room size
+        map_width (int): Width of game map
+        map_height (int): Height of game map
+        player (Entity): Player entity
+
+    Returns:
+        dungeon: A new GameMap with rooms and tunnels
+    """
+    dungeon = GameMap(map_width,map_height, entities=[player])
 
     rooms: List[RectangularRoom] =[]
     
