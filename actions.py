@@ -74,3 +74,7 @@ class MovementAction(ActionWithDirection):
             return # destination is blocked by an entity, do not move
         else:
             self.entity.move(self.dx, self.dy)
+
+class WaitAction(Action):
+    def perform(self) -> None:
+        pass
