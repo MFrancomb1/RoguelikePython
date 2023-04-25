@@ -1,6 +1,6 @@
 from __future__ import annotations
 import copy
-from typing import Tuple, TypeVar, TYPE_CHECKING
+from typing import Optional, Tuple, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from game_map import GameMap
@@ -11,8 +11,11 @@ class Entity:
     """
     Object representing players, enemies, items, etc.
     """
+    gamemap: GameMap
+
     def __init__(
             self,
+            gamemap: Optional[GameMap] = None,
             x: int = 0,
             y: int = 0,
             char: str = "?",
@@ -26,6 +29,10 @@ class Entity:
         self.color = color
         self.name = name
         self.blocks_movement = blocks_movement
+        if gamemap:
+            #if game map isnt provided now then it will be later.
+            self.gamemap = gamemap
+            gamemap.entities.add(self)
 
     def spawn(
             self: T,
@@ -36,8 +43,19 @@ class Entity:
         clone = copy.deepcopy(self)
         clone.x = x
         clone.y = y
+        clone.gamemap = gamemap
         gamemap.entities.add(clone)
         return clone
+    
+    def place(self, x: int, y: int, gamemap: Optional[GameMap] = None) -> None:
+        """Place this entity at a new location. Handles moving across GameMaps."""
+        self.x = x
+        self.y = y
+        if gamemap:
+            if hasattr(self, "gamemap"): #possibly uninitialaized
+                self.gamemap.entities.remove(self)
+            self.gamemap = gamemap
+            gamemap.entities.add(self)
 
     def move(self, dx, dy):\
         # move the entity by (dx, dy) spaces
