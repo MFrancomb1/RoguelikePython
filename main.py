@@ -4,13 +4,14 @@ from engine import Engine
 from game_map import GameMap
 from procgen import generate_dungeon
 import entity_factories
+import color
 
 def main() -> None:
     sWidth = 80
     sHeight = 50
 
     mapWidth = 80
-    mapHeight = 45
+    mapHeight = 43
 
     room_max_size = 10
     room_min_size = 6
@@ -31,6 +32,8 @@ def main() -> None:
         engine=engine,
     )
     engine.update_fov()
+
+    engine.message_log.add_message("Hello and Welcome, adventurer, to yet another dungeon!", color.welcome_text)
 
     tileset = tcod.tileset.load_tilesheet("dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD)
 
