@@ -34,7 +34,7 @@ class GameMap:
         )
 
     def in_bounds(self, x, y) -> bool:
-        return 0<=x<=self.width and 0<=y<=self.height
+        return 0<=x<self.width and 0<=y<self.height
     
     def get_blocking_entity_at_location(self, location_x: int, location_y: int) -> Optional[Entity]:
         for entity in self.entities:
