@@ -15,11 +15,11 @@ class Entity:
     """
     Object representing players, enemies, items, etc.
     """
-    gamemap: GameMap
+    parent: GameMap
 
     def __init__(
             self,
-            gamemap: Optional[GameMap] = None,
+            parent: Optional[GameMap] = None,
             x: int = 0,
             y: int = 0,
             char: str = "?",
@@ -35,10 +35,14 @@ class Entity:
         self.name = name
         self.blocks_movement = blocks_movement
         self.render_order = render_order
-        if gamemap:
-            #if game map isnt provided now then it will be later.
-            self.gamemap = gamemap
-            gamemap.entities.add(self)
+        if parent:
+            #if parent isnt provided now then it will be later.
+            self.gamemap = parent
+            parent.entities.add(self)
+
+    @property
+    def gamemap(self) -> GameMap:
+        return self.parent.gamemap
 
     def spawn(
             self: T,
@@ -49,7 +53,7 @@ class Entity:
         clone = copy.deepcopy(self)
         clone.x = x
         clone.y = y
-        clone.gamemap = gamemap
+        clone.parent = gamemap
         gamemap.entities.add(clone)
         return clone
     
@@ -58,9 +62,10 @@ class Entity:
         self.x = x
         self.y = y
         if gamemap:
-            if hasattr(self, "gamemap"): #possibly uninitialaized
-                self.gamemap.entities.remove(self)
-            self.gamemap = gamemap
+            if hasattr(self, "parent"): #possibly uninitialaized
+                if self.parent is self.gamemap:
+                    self.gamemap.entities.remove(self)
+            self.parent = gamemap
             gamemap.entities.add(self)
 
     def move(self, dx, dy):\
@@ -73,7 +78,7 @@ class Actor(Entity):
         super().__init__(x=x, y=y, char=char, color=color, name=name, blocks_movement=True, render_order=RenderOrder.ACTOR)
         self.ai: Optional[BaseAI] = ai_cls(self)
         self.fighter = fighter
-        self.fighter.entity = self
+        self.fighter.parent = self
 
     @property
     def is_alive(self) -> bool:
