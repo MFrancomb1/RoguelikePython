@@ -38,6 +38,11 @@ class GameMap:
             entity for entity in self.entities if isinstance(entity, Actor) and entity.is_alive
         )
 
+    @property
+    def items(self) -> Iterator[Item]:
+        yield from (entity for entity in self.entities if isinstance(entity, Item))
+
+
     def in_bounds(self, x, y) -> bool:
         return 0<=x<self.width and 0<=y<self.height
     
