@@ -50,7 +50,7 @@ def tunnel_between(start: Tuple[int,int], end: Tuple[int,int]) -> Iterator[Tuple
     for x, y in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
         yield x, y
 
-def generate_dungeon(max_rooms: int, room_min: int, room_max: int, map_width: int, map_height:int, max_monsters: int, engine: Engine) -> GameMap:
+def generate_dungeon(max_rooms: int, room_min: int, room_max: int, map_width: int, map_height:int, max_monsters: int, max_items: int, engine: Engine) -> GameMap:
 
     player = engine.player
     dungeon = GameMap(engine, map_width, map_height, entities=[player])
@@ -78,14 +78,15 @@ def generate_dungeon(max_rooms: int, room_min: int, room_max: int, map_width: in
             for x,y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x,y] = tile_types.floor
         
-        place_entities(new_room, dungeon, max_monsters)
+        place_entities(new_room, dungeon, max_monsters, max_items)
 
         rooms.append(new_room)
 
     return dungeon
 
-def place_entities(room:RectangularRoom, dungeon: GameMap, max_monsters: int) -> None:
+def place_entities(room:RectangularRoom, dungeon: GameMap, max_monsters: int, max_items: int) -> None:
     number_of_monsters = random.randint(0,max_monsters)
+    number_of_items = random.randint(0,max_items)
 
     for i in range(number_of_monsters):
         x = random.randint(room.x1+1, room.x2-1)
@@ -96,3 +97,10 @@ def place_entities(room:RectangularRoom, dungeon: GameMap, max_monsters: int) ->
                 entity_factories.orc.spawn(dungeon, x, y)
             else:
                 entity_factories.troll.spawn(dungeon, x ,y)
+    
+    for i in range(number_of_items):
+        x = random.randint(room.x1+1, room.x2-1)
+        y = random.randint(room.y1+1, room.y2-1)
+
+        if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
+            entity_factories.health_potion.spawn(dungeon, x, y)

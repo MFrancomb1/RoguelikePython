@@ -2,12 +2,13 @@ from __future__ import annotations
 from typing import Optional, Tuple, TYPE_CHECKING
 
 import color
+from entity import Actor
 
 import exceptions
 
 if TYPE_CHECKING:
     from engine import Engine
-    from entity import Actor, Entity
+    from entity import Actor, Entity, Item
 
 
 class Action:
@@ -100,3 +101,20 @@ class MovementAction(ActionWithDirection):
 class WaitAction(Action):
     def perform(self) -> None:
         pass
+
+class ItemAction(Action):
+    def __init__(self, entity: Actor, item: Item, target_xy: Optional[Tuple[int, int]] = None,) -> None:
+        super().__init__(entity)
+        self.item = item
+        if not target_xy:
+            target_xy = entity.x, entity.y
+        self.target_xy = target_xy
+
+        @property
+        def target_actor(self) -> Optional[Actor]:
+            """Returns the actor at this action's destination."""
+            return self.engine.game_map.get_actor_at_location(*self.target_xy)
+        
+        def perform(self) -> None:
+            """Invoke the item's ability, this action will be given to provide context."""
+            self.item.consumable.activate(self)
