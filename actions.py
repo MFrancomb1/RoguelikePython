@@ -3,6 +3,8 @@ from typing import Optional, Tuple, TYPE_CHECKING
 
 import color
 
+import exceptions
+
 if TYPE_CHECKING:
     from engine import Engine
     from entity import Actor, Entity
@@ -67,7 +69,7 @@ class MeleeAction(ActionWithDirection):
     def perform(self) -> None:
         target = self.target_actor
         if not target:
-            return # no entity
+            raise exceptions.Impossible("Nothing to attack.")
         
         damage = self.entity.fighter.power - target.fighter.defense
         attack_desc = f"{self.entity.name.capitalize()} attacks {target.name}"
@@ -87,11 +89,11 @@ class MovementAction(ActionWithDirection):
     def perform(self) -> None:
         dest_x, dest_y = self.dest_xy
         if not self.engine.game_map.in_bounds(dest_x, dest_y):
-            return # destination is out of bounds, do not move
+            raise exceptions.Impossible("That way is blocked.") # destination is out of bounds, do not move
         elif not self.engine.game_map.tiles["walkable"][dest_x,dest_y]:
-            return # destination is not walkable, do not move
+            raise exceptions.Impossible("That way is blocked.") # destination is not walkable, do not move
         elif self.engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
-            return # destination is blocked by an entity, do not move
+            raise exceptions.Impossible("That way is blocked.") # destination is blocked by an entity, do not move
         else:
             self.entity.move(self.dx, self.dy)
 
