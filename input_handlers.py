@@ -209,7 +209,7 @@ class MainGameEventHandler(EventHandler):
             action = WaitAction(player)
 
         elif key == tcod.event.K_ESCAPE:
-            action = EscapeAction(player)
+            raise SystemExit()
 
         elif key == tcod.event.K_g:
             action = PickupAction(player)
