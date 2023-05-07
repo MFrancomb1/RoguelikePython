@@ -8,7 +8,6 @@ import actions
 from actions import (
     Action,
     BumpAction,
-    EscapeAction,
     WaitAction,
     PickupAction
 )
